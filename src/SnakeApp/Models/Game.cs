@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +10,7 @@ namespace SnakeApp.Models
 	/// </summary>
 	public class Game
 	{
-		private readonly IGameObject _world;
+		private readonly World _world;
 		private readonly int _speed;
 		private CancellationTokenSource _gameCancellationTokenSource;
 
@@ -43,6 +41,17 @@ namespace SnakeApp.Models
 		public async Task Stop()
 		{
 			_gameCancellationTokenSource.Cancel();
+		}
+
+		public async Task ReceiveInput(ConsoleKey key)
+		{
+			if (key == ConsoleKey.Q)
+			{
+				await Stop();
+				return;
+			}
+			
+			await _world.ReceiveInput(key);
 		}
 
 		private async Task MainLoop(CancellationToken cancellationToken)

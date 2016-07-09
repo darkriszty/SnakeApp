@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace SnakeApp.Models
+﻿namespace SnakeApp.Models
 {
 	public enum Direction
 	{
@@ -11,5 +6,25 @@ namespace SnakeApp.Models
 		Down,
 		Left,
 		Right
+	}
+
+	public static class DirectionExtensions
+	{
+		public static bool IsOpposite(this Direction currentDirection, Direction requestedDirection)
+		{
+			switch (requestedDirection)
+			{
+				case Direction.Left:
+					return currentDirection == Direction.Right;
+				case Direction.Right:
+					return currentDirection == Direction.Left;
+				case Direction.Up:
+					return currentDirection == Direction.Down;
+				case Direction.Down:
+					return currentDirection == Direction.Up;
+				default:
+					return false;
+			}
+		}
 	}
 }
