@@ -12,6 +12,7 @@ namespace SnakeApp.Models
 	{
 		private readonly World _world;
 		private readonly int _speed;
+		private bool _isPaused;
 		private CancellationTokenSource _gameCancellationTokenSource;
 
 		public bool IsOver { get; private set; }
@@ -33,6 +34,7 @@ namespace SnakeApp.Models
 
 		public Task Start()
 		{
+			_isPaused = false;
 			// create cancellation token, run main loop, return the task
 			_gameCancellationTokenSource = new CancellationTokenSource();
 			return MainLoop(_gameCancellationTokenSource.Token);
@@ -40,6 +42,7 @@ namespace SnakeApp.Models
 
 		public async Task Stop()
 		{
+			_isPaused = true;
 			_gameCancellationTokenSource.Cancel();
 		}
 
@@ -49,6 +52,13 @@ namespace SnakeApp.Models
 			{
 				await Stop();
 				return;
+			}
+			if (key == ConsoleKey.P || key == ConsoleKey.Pause)
+			{
+				if (_isPaused)
+					await Start();
+				else
+					await Stop();
 			}
 			
 			await _world.ReceiveInput(key);
@@ -63,6 +73,8 @@ namespace SnakeApp.Models
 
 				await _world.Advance();
 				await _world.Draw();
+
+				_world.SpawnFood(1, 10);
 
 				await Task.Delay(_speed);
 			}

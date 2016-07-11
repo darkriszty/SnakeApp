@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SnakeApp.Models
@@ -69,6 +70,13 @@ namespace SnakeApp.Models
 				return;
 
 			await PointDrawing.ErasePoint(_lastSnakePointToErase);
+		}
+
+		public List<Point> GetOccupiedPoints()
+		{
+			var occupiedPoints = new List<Point>();
+			occupiedPoints.AddRange(_snakePoints.Select(s => new Point(s)));
+			return occupiedPoints;
 		}
 
 		private void InitSnake(Point initialHeadPosition, int initialSize, Direction initialDirection)
