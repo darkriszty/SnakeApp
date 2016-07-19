@@ -73,21 +73,17 @@ namespace SnakeApp.Models
 			List<Point> allOccupiedPoints = new List<Point>();
 			allOccupiedPoints.AddRange(_snake.GetOccupiedPoints());
 			allOccupiedPoints.AddRange(_food.Select(f => f.Position));
-			
-			List<int> occupiedX = allOccupiedPoints.Select(p => p.X).ToList();
-			List<int> occupiedY = allOccupiedPoints.Select(p => p.Y).ToList();
+
 			// while the x and y are occupied keep generating a new coordinate
-			int x = occupiedX[0];
-			int y = occupiedY[0];
-			while (occupiedX.Contains(x))
+			int x = allOccupiedPoints[0].X;
+			int y = allOccupiedPoints[0].Y;
+			while (allOccupiedPoints.Any(p => p.X == x && p.Y == y))
 			{
-				x = _random.Next(2, _width - 1);
+				x = _random.Next(1, _width);
+				y = _random.Next(2, _height);
+				Console.Title = $"{x}, {y}";
+				Task.Delay(1);
 			}
-			while (occupiedY.Contains(y))
-			{
-				y = _random.Next(2, _height - 1);
-			}
-			Console.Title = $"{x}, {y}";
 			return new Point(x, y);
 		}
 
