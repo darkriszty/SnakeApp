@@ -29,8 +29,20 @@ namespace SnakeApp.Models
 				if (_food[i].CanRemove)
 					_food.RemoveAt(i);
 			}
+
 			// advance the snake
 			await _snake.Advance();
+
+			foreach (var food in _food)
+			{
+				if (food.Position == _snake.Head)
+				{
+					Console.Title = $"Snake head intersected with food ({food.Position.X},{food.Position.Y})";
+					// mark the food as eaten
+					// signal the snake to grow
+					// signal the world that the snake has grown
+				}
+			}
 		}
 
 		public async Task Draw()

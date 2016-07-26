@@ -11,6 +11,7 @@ namespace SnakeApp.Models
 	public class Game
 	{
 		private readonly World _world;
+		private readonly Score _score;
 		private readonly int _speed;
 		private bool _isPaused;
 		private CancellationTokenSource _gameCancellationTokenSource;
@@ -21,6 +22,7 @@ namespace SnakeApp.Models
 		{
 			Point initialSnakeHeadPosition = GetInitialSnakeHeadPosition(worldWidth, worldHeight, initialSnakeSize);
 			_world = new World(new Snake(initialSnakeSize, initialSnakeHeadPosition), worldWidth, worldHeight);
+			_score = new Score();
 			_speed = gameSpeed;
 		}
 
@@ -73,11 +75,17 @@ namespace SnakeApp.Models
 
 				await _world.Advance();
 				await _world.Draw();
-
+				ShowScore();
 				_world.SpawnFood(1, 10);
 
 				await Task.Delay(_speed);
 			}
+		}
+
+		private void ShowScore()
+		{
+			Console.SetCursorPosition(0, 0);
+			Console.Write(_score.FoodConsumed);
 		}
 	}
 }

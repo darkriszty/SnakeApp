@@ -19,6 +19,11 @@ namespace SnakeApp.Models
 			InitSnake(initialHeadPosition, initialSize, initialDirection);
 		}
 
+		public Point Head
+		{
+			get { return _snakePoints.Any()	? new Point(_snakePoints[0]) : null; }
+		}
+
 		public async Task Advance()
 		{
 			Point newHead = null;
