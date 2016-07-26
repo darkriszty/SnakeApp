@@ -23,6 +23,13 @@ namespace SnakeApp.Models
 
 		public async Task Advance()
 		{
+			// remove any old food
+			for (int i = _food.Count - 1; i >= 0; i--)
+			{
+				if (_food[i].CanRemove)
+					_food.RemoveAt(i);
+			}
+			// advance the snake
 			await _snake.Advance();
 		}
 
@@ -63,7 +70,7 @@ namespace SnakeApp.Models
 		public void SpawnFood(byte foodScore, byte secondsToLive)
 		{
 			Point foodPosition = FindFoodSpot();
-			Food f = new Food(foodScore, foodPosition);
+			Food f = new Food(foodScore, foodPosition, secondsToLive);
 			_food.Add(f);
 		}
 
