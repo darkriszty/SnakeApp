@@ -12,13 +12,15 @@ namespace SnakeApp.Models
 		private readonly Snake _snake;
 		private readonly byte _width;
 		private readonly byte _height;
+		private readonly Action<byte> _foodEaten;
 		private bool _bordersDrawn;
 
-		public World(Snake snake, byte width, byte height)
+		public World(Snake snake, byte width, byte height, Action<byte> foodEaten)
 		{
 			_snake = snake;
 			_width = width;
 			_height = height;
+			_foodEaten = foodEaten;
 		}
 
 		public async Task Advance()
@@ -41,6 +43,7 @@ namespace SnakeApp.Models
 					// mark the food as eaten
 					// signal the snake to grow
 					// signal the world that the snake has grown
+					_foodEaten(food.Score);
 				}
 			}
 		}

@@ -21,7 +21,7 @@ namespace SnakeApp.Models
 		public Game(byte worldWidth, byte worldHeight, byte initialSnakeSize, int gameSpeed)
 		{
 			Point initialSnakeHeadPosition = GetInitialSnakeHeadPosition(worldWidth, worldHeight, initialSnakeSize);
-			_world = new World(new Snake(initialSnakeSize, initialSnakeHeadPosition), worldWidth, worldHeight);
+			_world = new World(new Snake(initialSnakeSize, initialSnakeHeadPosition), worldWidth, worldHeight, FoodEatenCallback);
 			_score = new Score();
 			_speed = gameSpeed;
 		}
@@ -80,6 +80,11 @@ namespace SnakeApp.Models
 
 				await Task.Delay(_speed);
 			}
+		}
+
+		private void FoodEatenCallback(byte foodScore)
+		{
+			_score.FoodConsumed += foodScore;
 		}
 
 		private void ShowScore()

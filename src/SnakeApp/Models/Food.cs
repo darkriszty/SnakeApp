@@ -10,6 +10,10 @@ namespace SnakeApp.Models
 		private readonly Point _position;
 		private readonly DateTime _dateCreated;
 		private readonly byte _secondsToLive;
+		private bool _IsExpired
+		{
+			get { return (DateTime.Now - _dateCreated).TotalSeconds > _secondsToLive; }
+		}
 
 		public Food(byte score, Point position, byte secondsToLive)
 		{
@@ -24,9 +28,9 @@ namespace SnakeApp.Models
 			get { return _position; }
 		}
 
-		private bool _IsExpired
+		public byte Score
 		{
-			get { return (DateTime.Now - _dateCreated).TotalSeconds > _secondsToLive; }
+			get { return _score; }
 		}
 
 		public bool IsRotten
