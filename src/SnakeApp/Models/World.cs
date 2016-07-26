@@ -26,7 +26,7 @@ namespace SnakeApp.Models
 			// remove any old food
 			for (int i = _food.Count - 1; i >= 0; i--)
 			{
-				if (_food[i].CanRemove)
+				if (_food[i].IsRotten)
 					_food.RemoveAt(i);
 			}
 

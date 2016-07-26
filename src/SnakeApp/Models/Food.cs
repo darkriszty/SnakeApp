@@ -24,21 +24,21 @@ namespace SnakeApp.Models
 			get { return _position; }
 		}
 
-		private bool _IsRotten
+		private bool _IsExpired
 		{
 			get { return (DateTime.Now - _dateCreated).TotalSeconds > _secondsToLive; }
 		}
 
-		public bool CanRemove
+		public bool IsRotten
 		{
-			get { return _IsRotten &&_drawnAsRotten; }
+			get { return _IsExpired &&_drawnAsRotten; }
 		}
 
 		public async Task Draw()
 		{
 			// after the food becomes old the world must first draw it (aka remove it)
 			// then the CanRemove property returns true such that it is removed from the world an the position is freed up
-			if (_IsRotten)
+			if (_IsExpired)
 			{
 				await PointDrawing.ErasePoint(_position);
 				_drawnAsRotten = true;
