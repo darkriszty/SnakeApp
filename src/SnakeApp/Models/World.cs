@@ -81,8 +81,6 @@ namespace SnakeApp.Models
 			{
 				x = _random.Next(1, _width);
 				y = _random.Next(2, _height);
-				Console.Title = $"{x}, {y}";
-				Task.Delay(1);
 			}
 			return new Point(x, y);
 		}
