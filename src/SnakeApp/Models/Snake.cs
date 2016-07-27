@@ -57,6 +57,12 @@ namespace SnakeApp.Models
 			_snakePoints.RemoveAt(_snakePoints.Count - 1);
 		}
 
+		public void Consume(Food food)
+		{
+			// mark the food as eaten
+			food.IsConsumed = true;
+		}
+
 		public async Task SetDirection(Direction requestedDirection)
 		{
 			if (!_direction.IsOpposite(requestedDirection))

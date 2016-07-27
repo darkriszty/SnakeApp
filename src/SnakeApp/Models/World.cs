@@ -35,17 +35,21 @@ namespace SnakeApp.Models
 			// advance the snake
 			await _snake.Advance();
 
+			// check if the snake head intersects with a food
 			foreach (var food in _food)
 			{
 				if (food.Position == _snake.Head)
 				{
 					Console.Title = $"Snake head intersected with food ({food.Position.X},{food.Position.Y})";
-					// mark the food as eaten
-					food.IsConsumed = true;
 
-					// signal the snake to grow
+					// signal the snake to consume food
+					_snake.Consume(food);
+
 					// signal the world that the snake has grown
 					_foodEaten(food.Score);
+
+					// no other food can be intersecting with the head at the same time, so save a few useless iterations by breaking
+					break;
 				}
 			}
 		}
