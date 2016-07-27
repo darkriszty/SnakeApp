@@ -122,13 +122,13 @@ namespace SnakeApp.Models
 		private bool DidSnakeReachObstacle()
 		{
 			// get all occupied points that will make the snake die
-			List<Point> allOccupiedPoints = new List<Point>();
+			List<Point> snakeOccupiedPoints = new List<Point>();
 
 			// the snake is not allowed to collide with itself
-			//TODO: this doesn't seem to work
-			allOccupiedPoints.AddRange(_snake.GetOccupiedPoints());
-			allOccupiedPoints = allOccupiedPoints.Except(new [] {_snake.Head}).ToList();
-			if (allOccupiedPoints.Contains(_snake.Head))
+			snakeOccupiedPoints.AddRange(_snake.GetOccupiedPoints());
+			// exclude head, otherwise it's game over from start
+			snakeOccupiedPoints.RemoveAt(0);
+			if (snakeOccupiedPoints.Contains(_snake.Head))
 				return true;
 
 			// the snake is not allowed to hit the borders
