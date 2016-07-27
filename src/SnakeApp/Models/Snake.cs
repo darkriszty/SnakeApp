@@ -28,31 +28,10 @@ namespace SnakeApp.Models
 
 		public async Task Advance()
 		{
-			Point whenToGrow = null;
-			switch (_direction)
-			{
-				case Direction.Left:
-					whenToGrow = new Point { X = _snakePoints[0].X - 1, Y = _snakePoints[0].Y };
-					break;
-
-				case Direction.Right:
-					whenToGrow = new Point { X = _snakePoints[0].X + 1, Y = _snakePoints[0].Y };
-					break;
-
-				case Direction.Up:
-					whenToGrow = new Point { X = _snakePoints[0].X, Y = _snakePoints[0].Y - 1 };
-					break;
-
-				case Direction.Down:
-					whenToGrow = new Point { X = _snakePoints[0].X, Y = _snakePoints[0].Y + 1 };
-					break;
-
-				default:
-					break;
-			}
+			Point nextHead = GetNextHead();
 
 			// add the new head
-			_snakePoints.Insert(0, whenToGrow);
+			_snakePoints.Insert(0, nextHead);
 
 			// delete the last snake point
 			_lastSnakePointToErase = _snakePoints[_snakePoints.Count - 1];
@@ -62,6 +41,8 @@ namespace SnakeApp.Models
 			for(int i = 0; i < _growingPointIndicators.Count; i++)
 			{
 				var p = _growingPointIndicators[i];
+
+				// do the actual growing at a predefined position (which means a predefined moment in time)
 				if (Head == p.TailPositionWhenToGrow)
 				{
 					_snakePoints.Add(p.OriginalFoodPosition);
@@ -80,30 +61,8 @@ namespace SnakeApp.Models
 			var growingPointIndicator = new GrowingPointIndicator();
 			growingPointIndicator.OriginalFoodPosition = new Point(food.Position);
 			
-			// TODO: refactor this because it's repeating
-			Point whenToGrow = null;
-			switch (_direction)
-			{
-				case Direction.Left:
-					whenToGrow = new Point { X = _snakePoints[0].X - 1, Y = _snakePoints[0].Y };
-					break;
-
-				case Direction.Right:
-					whenToGrow = new Point { X = _snakePoints[0].X + 1, Y = _snakePoints[0].Y };
-					break;
-
-				case Direction.Up:
-					whenToGrow = new Point { X = _snakePoints[0].X, Y = _snakePoints[0].Y - 1 };
-					break;
-
-				case Direction.Down:
-					whenToGrow = new Point { X = _snakePoints[0].X, Y = _snakePoints[0].Y + 1 };
-					break;
-
-				default:
-					break;
-			}
-			growingPointIndicator.TailPositionWhenToGrow = whenToGrow;
+			Point nextHead = GetNextHead();
+			growingPointIndicator.TailPositionWhenToGrow = nextHead;
 
 			// when the tail of the snake leaves the position of the food then the snake grows by adding one more point to its tail
 			_growingPointIndicators.Add(growingPointIndicator);
@@ -153,6 +112,34 @@ namespace SnakeApp.Models
 					_snakePoints.Add(bodyPoint);
 				}
 			}
+		}
+
+		private Point GetNextHead()
+		{
+			Point nextHead = null;
+			switch (_direction)
+			{
+				case Direction.Left:
+					nextHead = new Point { X = _snakePoints[0].X - 1, Y = _snakePoints[0].Y };
+					break;
+
+				case Direction.Right:
+					nextHead = new Point { X = _snakePoints[0].X + 1, Y = _snakePoints[0].Y };
+					break;
+
+				case Direction.Up:
+					nextHead = new Point { X = _snakePoints[0].X, Y = _snakePoints[0].Y - 1 };
+					break;
+
+				case Direction.Down:
+					nextHead = new Point { X = _snakePoints[0].X, Y = _snakePoints[0].Y + 1 };
+					break;
+
+				default:
+					break;
+			}
+
+			return nextHead;
 		}
 
 		private class GrowingPointIndicator
