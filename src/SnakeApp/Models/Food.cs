@@ -33,15 +33,20 @@ namespace SnakeApp.Models
 			get { return _score; }
 		}
 
-		public bool IsRotten
+		/// <summary>
+		/// Can be removed from the world either after it was expired and drawn as expirted, or if it got consumed
+		/// </summary>
+		public bool CanRemove
 		{
-			get { return _IsExpired &&_drawnAsRotten; }
+			get { return (_IsExpired && _drawnAsRotten) || IsConsumed; }
 		}
+
+		public bool IsConsumed { get; set; }
 
 		public async Task Draw()
 		{
 			// after the food becomes old the world must first draw it (aka remove it)
-			// then the CanRemove property returns true such that it is removed from the world an the position is freed up
+			// then the CanRemove property returns true such that it is removed from the world and the position is freed up
 			if (_IsExpired)
 			{
 				await PointDrawing.ErasePoint(_position);

@@ -28,7 +28,7 @@ namespace SnakeApp.Models
 			// remove any old food
 			for (int i = _food.Count - 1; i >= 0; i--)
 			{
-				if (_food[i].IsRotten)
+				if (_food[i].CanRemove)
 					_food.RemoveAt(i);
 			}
 
@@ -41,6 +41,8 @@ namespace SnakeApp.Models
 				{
 					Console.Title = $"Snake head intersected with food ({food.Position.X},{food.Position.Y})";
 					// mark the food as eaten
+					food.IsConsumed = true;
+
 					// signal the snake to grow
 					// signal the world that the snake has grown
 					_foodEaten(food.Score);
