@@ -16,6 +16,26 @@
 			Y = other.Y;
 		}
 
+		// override object.Equals
+		public override bool Equals (object obj)
+		{
+			if (obj == null || GetType() != obj.GetType())
+			{
+				return false;
+			}
+			
+			return this == (Point) obj;
+		}
+		
+		// override object.GetHashCode
+		public override int GetHashCode()
+		{
+			int hashCode = 13;
+			hashCode = (hashCode * 7) + X.GetHashCode();
+			hashCode = (hashCode * 7) + Y.GetHashCode();
+			return hashCode;
+		}
+
 		public static bool operator == (Point a, Point b)
 		{
 			if (ReferenceEquals(a, b))

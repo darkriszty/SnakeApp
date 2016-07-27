@@ -21,7 +21,7 @@ namespace SnakeApp.Models
 		public Game(byte worldWidth, byte worldHeight, byte initialSnakeSize, int gameSpeed)
 		{
 			Point initialSnakeHeadPosition = GetInitialSnakeHeadPosition(worldWidth, worldHeight, initialSnakeSize);
-			_world = new World(new Snake(initialSnakeSize, initialSnakeHeadPosition), worldWidth, worldHeight, FoodEatenCallback);
+			_world = new World(new Snake(initialSnakeSize, initialSnakeHeadPosition), worldWidth, worldHeight, FoodEatenCallback, SnakeDiedCallback);
 			_score = new Score();
 			_speed = gameSpeed;
 		}
@@ -42,7 +42,7 @@ namespace SnakeApp.Models
 			return MainLoop(_gameCancellationTokenSource.Token);
 		}
 
-		public async Task Stop()
+		public void Stop()
 		{
 			_isPaused = true;
 			_gameCancellationTokenSource.Cancel();
@@ -52,7 +52,7 @@ namespace SnakeApp.Models
 		{
 			if (key == ConsoleKey.Q)
 			{
-				await Stop();
+				Stop();
 				return;
 			}
 			if (key == ConsoleKey.P || key == ConsoleKey.Pause)
@@ -60,7 +60,7 @@ namespace SnakeApp.Models
 				if (_isPaused)
 					await Start();
 				else
-					await Stop();
+					Stop();
 			}
 			
 			await _world.ReceiveInput(key);
@@ -85,6 +85,14 @@ namespace SnakeApp.Models
 		private void FoodEatenCallback(byte foodScore)
 		{
 			_score.FoodConsumed += foodScore;
+		}
+
+		private void SnakeDiedCallback()
+		{
+			Stop();
+			// TODO: consider moving this logic with the main loop into the game controller 
+			Console.Title = "Game over";
+			IsOver = true;
 		}
 
 		private void ShowScore()

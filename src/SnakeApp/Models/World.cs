@@ -13,14 +13,16 @@ namespace SnakeApp.Models
 		private readonly byte _width;
 		private readonly byte _height;
 		private readonly Action<byte> _foodEaten;
+		private readonly Action _snakeDied;
 		private bool _bordersDrawn;
 
-		public World(Snake snake, byte width, byte height, Action<byte> foodEaten)
+		public World(Snake snake, byte width, byte height, Action<byte> foodEaten, Action snakeDied)
 		{
 			_snake = snake;
 			_width = width;
 			_height = height;
 			_foodEaten = foodEaten;
+			_snakeDied = snakeDied;
 		}
 
 		public async Task Advance()
@@ -52,6 +54,10 @@ namespace SnakeApp.Models
 					break;
 				}
 			}
+
+			bool snakeDied = DidSnakeReachObstacle();
+			if (snakeDied)
+				_snakeDied();
 		}
 
 		public async Task Draw()
@@ -111,6 +117,31 @@ namespace SnakeApp.Models
 				y = _random.Next(2, _height);
 			}
 			return new Point(x, y);
+		}
+
+		private bool DidSnakeReachObstacle()
+		{
+			// get all occupied points that will make the snake die
+			List<Point> allOccupiedPoints = new List<Point>();
+
+			// the snake is not allowed to collide with itself
+			//TODO: this doesn't seem to work
+			allOccupiedPoints.AddRange(_snake.GetOccupiedPoints());
+			allOccupiedPoints = allOccupiedPoints.Except(new [] {_snake.Head}).ToList();
+			if (allOccupiedPoints.Contains(_snake.Head))
+				return true;
+
+			// the snake is not allowed to hit the borders
+			if (_snake.Head.X < 1)
+				return true;
+			if (_snake.Head.X >= _width)
+				return true;
+			if (_snake.Head.Y < 2)
+				return true;
+			if (_snake.Head.Y >= _height)
+				return true;
+
+			return false;
 		}
 
 		private async Task DrawBorders()
