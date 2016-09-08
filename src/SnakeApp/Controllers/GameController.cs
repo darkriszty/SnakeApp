@@ -1,7 +1,7 @@
 ﻿using SnakeApp.Models;
 using System;
 
-namespace SnakeApp
+namespace SnakeApp.Controllers
 {
 	public class GameController
 	{

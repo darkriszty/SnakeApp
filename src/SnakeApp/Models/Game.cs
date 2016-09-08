@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SnakeApp.Controllers;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,18 +21,12 @@ namespace SnakeApp.Models
 
 		public Game(byte worldWidth, byte worldHeight, byte initialSnakeSize, int gameSpeed)
 		{
-			Point initialSnakeHeadPosition = GetInitialSnakeHeadPosition(worldWidth, worldHeight, initialSnakeSize);
-			_world = new World(new Snake(initialSnakeSize, initialSnakeHeadPosition), worldWidth, worldHeight, FoodEatenCallback, SnakeDiedCallback);
+			var initialSnakeHeadPosition = GetInitialSnakeHeadPosition(worldWidth, worldHeight, initialSnakeSize);
+			var snake = new Snake(initialSnakeSize, initialSnakeHeadPosition);
+			var foodHandler = new FoodController(worldWidth, worldHeight, snake, FoodEatenCallback);
+			_world = new World(snake, worldWidth, worldHeight, foodHandler, SnakeDiedCallback);
 			_score = new Score();
 			_speed = gameSpeed;
-		}
-
-		public Point GetInitialSnakeHeadPosition(byte worldWidth, byte worldHeight, byte initialSnakeSize)
-		{
-			Point p = new Point();
-			p.Y = worldHeight / 2;
-			p.X = (worldWidth / 2) - (initialSnakeSize / 2);
-			return p;
 		}
 
 		public Task StartAsync()
@@ -76,10 +71,17 @@ namespace SnakeApp.Models
 				_world.Advance();
 				_world.Draw();
 				ShowScore();
-				_world.SpawnFood(1, 10);
 
 				await Task.Delay(_speed);
 			}
+		}
+
+		private Point GetInitialSnakeHeadPosition(byte worldWidth, byte worldHeight, byte initialSnakeSize)
+		{
+			Point p = new Point();
+			p.Y = worldHeight / 2;
+			p.X = (worldWidth / 2) - (initialSnakeSize / 2);
+			return p;
 		}
 
 		private void FoodEatenCallback(byte foodScore)

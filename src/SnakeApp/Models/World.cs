@@ -1,59 +1,39 @@
-﻿using System;
+﻿using SnakeApp.Controllers;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
 
 namespace SnakeApp.Models
 {
 	public class World
 	{
-		private readonly List<Food> _food = new List<Food>();
-		private readonly Random _random = new Random();
+		private bool _bordersDrawn;
 		private readonly Snake _snake;
 		private readonly byte _width;
 		private readonly byte _height;
-		private readonly Action<byte> _foodEaten;
+		private FoodController _foodHandler;
 		private readonly Action _snakeDied;
-		private bool _bordersDrawn;
 
-		public World(Snake snake, byte width, byte height, Action<byte> foodEaten, Action snakeDied)
+		public World(Snake snake, byte width, byte height, FoodController foodHandler, Action snakeDied)
 		{
 			_snake = snake;
 			_width = width;
 			_height = height;
-			_foodEaten = foodEaten;
+			_foodHandler = foodHandler;
 			_snakeDied = snakeDied;
 		}
 
 		public void Advance()
 		{
+			_foodHandler.SpawnFoodIfRequired();
+
 			// remove any old food
-			for (int i = _food.Count - 1; i >= 0; i--)
-			{
-				if (_food[i].CanRemove)
-					_food.RemoveAt(i);
-			}
+			_foodHandler.RemoveExpiredFood();
 
 			// advance the snake
 			_snake.Advance();
 
 			// check if the snake head intersects with a food
-			foreach (var food in _food)
-			{
-				if (food.Position == _snake.Head)
-				{
-					Console.Title = $"Snake head intersected with food ({food.Position.X},{food.Position.Y})";
-
-					// signal the snake to consume food
-					_snake.Consume(food);
-
-					// signal the world that the snake has grown
-					_foodEaten(food.Score);
-
-					// no other food can be intersecting with the head at the same time, so save a few useless iterations by breaking
-					break;
-				}
-			}
+			_foodHandler.SnakeIntersectsWithFood(_snake);
 
 			bool snakeDied = DidSnakeReachObstacle();
 			if (snakeDied)
@@ -66,10 +46,7 @@ namespace SnakeApp.Models
 			DrawBorders();
 			_snake.Draw();
 			// drawing the food after the snake creates an 'eating' effect
-			foreach (var food in _food)
-			{
-				food.Draw();
-			}
+			_foodHandler.DrawAllFood();
 		}
 
 		public void ReceiveInput(ConsoleKey key)
@@ -92,31 +69,6 @@ namespace SnakeApp.Models
 					_snake.SetDirection(Direction.Down);
 					break;
 			}
-		}
-
-		public void SpawnFood(byte foodScore, byte secondsToLive)
-		{
-			Point foodPosition = FindFoodSpot();
-			Food f = new Food(foodScore, foodPosition, secondsToLive);
-			_food.Add(f);
-		}
-
-		private Point FindFoodSpot()
-		{
-			// get all the occupied points
-			List<Point> allOccupiedPoints = new List<Point>();
-			allOccupiedPoints.AddRange(_snake.GetOccupiedPoints());
-			allOccupiedPoints.AddRange(_food.Select(f => f.Position));
-
-			// while the x and y are occupied keep generating a new coordinate
-			int x = allOccupiedPoints[0].X;
-			int y = allOccupiedPoints[0].Y;
-			while (allOccupiedPoints.Any(p => p.X == x && p.Y == y))
-			{
-				x = _random.Next(1, _width);
-				y = _random.Next(2, _height);
-			}
-			return new Point(x, y);
 		}
 
 		private bool DidSnakeReachObstacle()

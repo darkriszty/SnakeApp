@@ -1,4 +1,6 @@
-﻿namespace SnakeApp
+﻿using SnakeApp.Controllers;
+
+namespace SnakeApp
 {
 	public class Program
 	{
