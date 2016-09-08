@@ -11,17 +11,15 @@ namespace SnakeApp.Controllers
 		private readonly World _world;
 		private readonly SnakeController _snakeController;
 		private readonly FoodController _foodController;
-		private readonly Action _snakeDied;
 
-		public WorldController(World world, SnakeController snakeController, FoodController foodController, Action snakeDied)
+		public WorldController(World world, SnakeController snakeController, FoodController foodController)
 		{
 			_world = world;
 			_snakeController = snakeController;
 			_foodController = foodController;
-			_snakeDied = snakeDied;
 		}
 
-		public void Advance()
+		public GameStepResult Advance()
 		{
 			_foodController.SpawnFoodIfRequired();
 
@@ -32,11 +30,15 @@ namespace SnakeApp.Controllers
 			_snakeController.Advance(_world.Snake);
 
 			// check if the snake head intersects with a food
-			_foodController.SnakeIntersectsWithFood(_world.Snake);
+			byte consumedFoodScore = _foodController.ConsumedFoodAtCurrentPosition(_world.Snake);
 
 			bool snakeDied = DidSnakeReachObstacle();
-			if (snakeDied)
-				_snakeDied();
+
+			return new GameStepResult
+			{
+				GameOver = snakeDied,
+				ConsumedFoodScore = consumedFoodScore
+			};
 		}
 
 		public void Draw()

@@ -1,4 +1,4 @@
-﻿using SnakeApp.Controllers;
+﻿using SnakeApp.Factories;
 
 namespace SnakeApp
 {
@@ -6,7 +6,8 @@ namespace SnakeApp
 	{
 		public static void Main(string[] args)
 		{
-			var gameController = new GameController();
+			var gameController = new GameControllerFactory().CreateController();
+
 			gameController.StartNewGame();
 		}
 	}

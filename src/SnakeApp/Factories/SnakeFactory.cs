@@ -1,19 +1,27 @@
-﻿using SnakeApp.Graphics;
+﻿using SnakeApp.Configuration;
+using SnakeApp.Graphics;
 using SnakeApp.Models;
 
 namespace SnakeApp.Factories
 {
 	public class SnakeFactory
 	{
-		public static Snake CreateSnake(int initialSize, Point initialHeadPosition)
+		private readonly AppSettings _appSettings;
+
+		public SnakeFactory(AppSettings appSettings)
+		{
+			_appSettings = appSettings;
+		}
+
+		public Snake CreateSnake()
 		{
 			var snake = new Snake();
 			snake.Direction = Direction.Right;
 
-			snake.SnakePoints.Clear();
+			var initialHeadPosition = GetInitialSnakeHeadPosition(_appSettings.WorldWidth, _appSettings.WorldHeight, _appSettings.InitialSnakeSize);
 			snake.SnakePoints.Add(initialHeadPosition);
 
-			for (int i = 1; i < initialSize; i++)
+			for (int i = 1; i < _appSettings.InitialSnakeSize; i++)
 			{
 				var bodyPoint = new Point
 				{
@@ -24,6 +32,14 @@ namespace SnakeApp.Factories
 			}
 
 			return snake;
+		}
+
+		private Point GetInitialSnakeHeadPosition(byte worldWidth, byte worldHeight, byte initialSnakeSize)
+		{
+			Point p = new Point();
+			p.Y = worldHeight / 2;
+			p.X = (worldWidth / 2) - (initialSnakeSize / 2);
+			return p;
 		}
 	}
 }

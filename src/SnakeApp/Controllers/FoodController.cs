@@ -1,4 +1,5 @@
-﻿using SnakeApp.Extensions;
+﻿using SnakeApp.Configuration;
+using SnakeApp.Extensions;
 using SnakeApp.Graphics;
 using SnakeApp.Models;
 using System;
@@ -9,25 +10,17 @@ namespace SnakeApp.Controllers
 {
 	public class FoodController
 	{
-		private const int MAX_FOOD_COUNT = 1;
-		private const byte FOOD_SCORE = 1;
-		private const byte FOOD_TTL = 10;
 		private readonly Random _random = new Random();
 		private readonly List<Food> _food = new List<Food>();
-		private readonly byte _worldWidth;
-		private readonly byte _worldHeight;
 		private readonly Snake _snake;
 		private readonly SnakeController _snakeController;
-		private readonly Action<byte> _foodEaten;
+		private readonly AppSettings _appSettings;
 
-		public FoodController(byte worldWidth, byte worldHeight, Snake snake, 
-			SnakeController snakeController, Action<byte> foodEaten)
+		public FoodController(Snake snake, SnakeController snakeController, AppSettings appSettings)
 		{
-			_worldWidth = worldWidth;
-			_worldHeight = worldHeight;
 			_snake = snake;
 			_snakeController = snakeController;
-			_foodEaten = foodEaten;
+			_appSettings = appSettings;
 		}
 
 		public void RemoveExpiredFood()
@@ -41,14 +34,14 @@ namespace SnakeApp.Controllers
 
 		public void SpawnFoodIfRequired()
 		{
-			if (_food.Count == MAX_FOOD_COUNT)
+			if (_food.Count == _appSettings.MaxFoodCount)
 				return;
 			Point foodPosition = FindFoodSpot();
-			Food f = new Food(FOOD_SCORE, foodPosition, FOOD_TTL);
+			Food f = new Food(_appSettings.FoodScore, foodPosition, _appSettings.FoodTTLInSeconds);
 			_food.Add(f);
 		}
 
-		public void SnakeIntersectsWithFood(Snake snake)
+		public byte ConsumedFoodAtCurrentPosition(Snake snake)
 		{
 			foreach (var food in _food)
 			{
@@ -57,13 +50,12 @@ namespace SnakeApp.Controllers
 					// signal the snake to consume food
 					_snakeController.Consume(_snake, food);
 
-					// signal the world that the snake has grown
-					_foodEaten(food.Score);
-
 					// no other food can be intersecting with the head at the same time, so save a few useless iterations by breaking
-					break;
+					return food.Score;
 				}
 			}
+
+			return 0;
 		}
 
 		public void DrawAllFood()
@@ -86,8 +78,8 @@ namespace SnakeApp.Controllers
 			int y = allOccupiedPoints[0].Y;
 			while (allOccupiedPoints.Any(p => p.X == x && p.Y == y))
 			{
-				x = _random.Next(1, _worldWidth);
-				y = _random.Next(2, _worldHeight);
+				x = _random.Next(1, _appSettings.WorldWidth);
+				y = _random.Next(2, _appSettings.WorldHeight);
 			}
 			return new Point(x, y);
 		}
