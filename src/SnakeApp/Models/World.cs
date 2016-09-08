@@ -1,4 +1,5 @@
 ﻿using SnakeApp.Controllers;
+using SnakeApp.Extensions;
 using SnakeApp.Graphics;
 using System;
 using System.Collections.Generic;
@@ -11,30 +12,34 @@ namespace SnakeApp.Models
 		private readonly Snake _snake;
 		private readonly byte _width;
 		private readonly byte _height;
-		private FoodController _foodHandler;
+		private readonly SnakeController _snakeController;
+		private readonly FoodController _foodController;
 		private readonly Action _snakeDied;
 
-		public World(Snake snake, byte width, byte height, FoodController foodHandler, Action snakeDied)
+		public World(Snake snake, byte width, byte height, 
+			SnakeController snakeController, FoodController foodController, 
+			Action snakeDied)
 		{
 			_snake = snake;
 			_width = width;
 			_height = height;
-			_foodHandler = foodHandler;
+			_snakeController = snakeController;
+			_foodController = foodController;
 			_snakeDied = snakeDied;
 		}
 
 		public void Advance()
 		{
-			_foodHandler.SpawnFoodIfRequired();
+			_foodController.SpawnFoodIfRequired();
 
 			// remove any old food
-			_foodHandler.RemoveExpiredFood();
+			_foodController.RemoveExpiredFood();
 
 			// advance the snake
-			_snake.Advance();
+			_snakeController.Advance(_snake);
 
 			// check if the snake head intersects with a food
-			_foodHandler.SnakeIntersectsWithFood(_snake);
+			_foodController.SnakeIntersectsWithFood(_snake);
 
 			bool snakeDied = DidSnakeReachObstacle();
 			if (snakeDied)
@@ -45,9 +50,9 @@ namespace SnakeApp.Models
 		{
 			// draw border
 			DrawBorders();
-			_snake.Draw();
+			_snakeController.Draw(_snake);
 			// drawing the food after the snake creates an 'eating' effect
-			_foodHandler.DrawAllFood();
+			_foodController.DrawAllFood();
 		}
 
 		public void ReceiveInput(ConsoleKey key)
@@ -81,17 +86,17 @@ namespace SnakeApp.Models
 			snakeOccupiedPoints.AddRange(_snake.GetOccupiedPoints());
 			// exclude head, otherwise it's game over from start
 			snakeOccupiedPoints.RemoveAt(0);
-			if (snakeOccupiedPoints.Contains(_snake.Head))
+			if (snakeOccupiedPoints.Contains(_snake.Head()))
 				return true;
 
 			// the snake is not allowed to hit the borders
-			if (_snake.Head.X < 1)
+			if (_snake.Head().X < 1)
 				return true;
-			if (_snake.Head.X >= _width)
+			if (_snake.Head().X >= _width)
 				return true;
-			if (_snake.Head.Y < 2)
+			if (_snake.Head().Y < 2)
 				return true;
-			if (_snake.Head.Y >= _height)
+			if (_snake.Head().Y >= _height)
 				return true;
 
 			return false;

@@ -1,5 +1,5 @@
-﻿using SnakeApp.Graphics;
-using SnakeApp.Extensions;
+﻿using SnakeApp.Extensions;
+using SnakeApp.Graphics;
 using SnakeApp.Models;
 using System;
 using System.Collections.Generic;
@@ -17,13 +17,16 @@ namespace SnakeApp.Controllers
 		private readonly byte _worldWidth;
 		private readonly byte _worldHeight;
 		private readonly Snake _snake;
+		private readonly SnakeController _snakeController;
 		private readonly Action<byte> _foodEaten;
 
-		public FoodController(byte worldWidth, byte worldHeight, Snake snake, Action<byte> foodEaten)
+		public FoodController(byte worldWidth, byte worldHeight, Snake snake, 
+			SnakeController snakeController, Action<byte> foodEaten)
 		{
 			_worldWidth = worldWidth;
 			_worldHeight = worldHeight;
 			_snake = snake;
+			_snakeController = snakeController;
 			_foodEaten = foodEaten;
 		}
 
@@ -49,10 +52,10 @@ namespace SnakeApp.Controllers
 		{
 			foreach (var food in _food)
 			{
-				if (food.Position == snake.Head)
+				if (food.Position == snake.Head())
 				{
 					// signal the snake to consume food
-					snake.Consume(food);
+					_snakeController.Consume(_snake, food);
 
 					// signal the world that the snake has grown
 					_foodEaten(food.Score);
@@ -67,7 +70,7 @@ namespace SnakeApp.Controllers
 		{
 			foreach (var food in _food)
 			{
-				food.Draw();
+				Draw(food);
 			}
 		}
 
@@ -87,6 +90,21 @@ namespace SnakeApp.Controllers
 				y = _random.Next(2, _worldHeight);
 			}
 			return new Point(x, y);
+		}
+
+		public static void Draw(Food food)
+		{
+			// after the food becomes old the world must first draw it (aka remove it)
+			// then the CanRemove property returns true such that it is removed from the world and the position is freed up
+			if (food.IsExpired())
+			{
+				PointDrawing.ErasePoint(food.Position);
+				food.DrawnAsRotten = true;
+			}
+			else
+			{
+				PointDrawing.DrawPoint(food.Position, '*');
+			}
 		}
 	}
 }

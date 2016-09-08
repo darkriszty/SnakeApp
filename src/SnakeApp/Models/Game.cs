@@ -1,4 +1,5 @@
 ﻿using SnakeApp.Controllers;
+using SnakeApp.Factories;
 using SnakeApp.Graphics;
 using System;
 using System.Threading;
@@ -23,9 +24,10 @@ namespace SnakeApp.Models
 		public Game(byte worldWidth, byte worldHeight, byte initialSnakeSize, int gameSpeed)
 		{
 			var initialSnakeHeadPosition = GetInitialSnakeHeadPosition(worldWidth, worldHeight, initialSnakeSize);
-			var snake = new Snake(initialSnakeSize, initialSnakeHeadPosition);
-			var foodHandler = new FoodController(worldWidth, worldHeight, snake, FoodEatenCallback);
-			_world = new World(snake, worldWidth, worldHeight, foodHandler, SnakeDiedCallback);
+			var snake = SnakeFactory.CreateSnake(initialSnakeSize, initialSnakeHeadPosition);
+			var snakeController = new SnakeController();
+			var foodController = new FoodController(worldWidth, worldHeight, snake, snakeController, FoodEatenCallback);
+			_world = new World(snake, worldWidth, worldHeight, snakeController, foodController, SnakeDiedCallback);
 			_score = new Score();
 			_speed = gameSpeed;
 		}
