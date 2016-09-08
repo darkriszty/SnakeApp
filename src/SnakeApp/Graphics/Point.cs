@@ -1,4 +1,4 @@
-﻿namespace SnakeApp.Drawing
+﻿namespace SnakeApp.Graphics
 {
 	public class Point
 	{

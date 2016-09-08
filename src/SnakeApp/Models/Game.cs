@@ -1,5 +1,5 @@
 ﻿using SnakeApp.Controllers;
-using SnakeApp.Drawing;
+using SnakeApp.Graphics;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
