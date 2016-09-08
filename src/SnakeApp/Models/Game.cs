@@ -18,6 +18,7 @@ namespace SnakeApp.Models
 		private readonly int _speed;
 		private bool _isPaused;
 		private CancellationTokenSource _gameCancellationTokenSource;
+		private WorldController _worldController;
 
 		public bool IsOver { get; private set; }
 
@@ -25,9 +26,12 @@ namespace SnakeApp.Models
 		{
 			var initialSnakeHeadPosition = GetInitialSnakeHeadPosition(worldWidth, worldHeight, initialSnakeSize);
 			var snake = SnakeFactory.CreateSnake(initialSnakeSize, initialSnakeHeadPosition);
+			var world = new World(snake, worldWidth, worldHeight);
+
 			var snakeController = new SnakeController();
 			var foodController = new FoodController(worldWidth, worldHeight, snake, snakeController, FoodEatenCallback);
-			_world = new World(snake, worldWidth, worldHeight, snakeController, foodController, SnakeDiedCallback);
+			_worldController = new WorldController(world, snakeController, foodController, SnakeDiedCallback);
+
 			_score = new Score();
 			_speed = gameSpeed;
 		}
@@ -61,7 +65,7 @@ namespace SnakeApp.Models
 					Stop();
 			}
 			
-			_world.ReceiveInput(key);
+			_worldController.ReceiveInput(key);
 		}
 
 		private async Task MainLoop(CancellationToken cancellationToken)
@@ -71,8 +75,8 @@ namespace SnakeApp.Models
 				if (cancellationToken.IsCancellationRequested)
 					break;
 
-				_world.Advance();
-				_world.Draw();
+				_worldController.Advance();
+				_worldController.Draw();
 				ShowScore();
 
 				await Task.Delay(_speed);
