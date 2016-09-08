@@ -1,4 +1,5 @@
-﻿using SnakeApp.Graphics;
+﻿using SnakeApp.Extensions;
+using SnakeApp.Graphics;
 using System.Collections.Generic;
 using System.Linq;
 
