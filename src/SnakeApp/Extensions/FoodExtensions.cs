@@ -1,4 +1,5 @@
-﻿using SnakeApp.Models;
+﻿using SnakeApp.Drawing;
+using SnakeApp.Models;
 using System;
 
 namespace SnakeApp.Extensions

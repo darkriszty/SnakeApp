@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SnakeApp.Models
+namespace SnakeApp.Drawing
 {
 	public class PointDrawing
 	{
