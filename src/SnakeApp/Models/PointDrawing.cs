@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 namespace SnakeApp.Models
 {
 	public class PointDrawing
 	{
-		public static async Task DrawPoint(Point p, char character)
+		public static void DrawPoint(Point p, char character)
 		{
 			Console.SetCursorPosition(p.X, p.Y);
 			Console.Write(character);
 		}
 
-		public static async Task ErasePoint(Point p)
+		public static void ErasePoint(Point p)
 		{
 			Console.SetCursorPosition(p.X, p.Y);
 			Console.Write(" ");

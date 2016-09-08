@@ -34,7 +34,7 @@ namespace SnakeApp.Models
 			return p;
 		}
 
-		public Task Start()
+		public Task StartAsync()
 		{
 			_isPaused = false;
 			// create cancellation token, run main loop, return the task
@@ -48,7 +48,7 @@ namespace SnakeApp.Models
 			_gameCancellationTokenSource.Cancel();
 		}
 
-		public async Task ReceiveInput(ConsoleKey key)
+		public void ReceiveInput(ConsoleKey key)
 		{
 			if (key == ConsoleKey.Q)
 			{
@@ -58,12 +58,12 @@ namespace SnakeApp.Models
 			if (key == ConsoleKey.P || key == ConsoleKey.Pause)
 			{
 				if (_isPaused)
-					await Start();
+					StartAsync();
 				else
 					Stop();
 			}
 			
-			await _world.ReceiveInput(key);
+			_world.ReceiveInput(key);
 		}
 
 		private async Task MainLoop(CancellationToken cancellationToken)
@@ -73,8 +73,8 @@ namespace SnakeApp.Models
 				if (cancellationToken.IsCancellationRequested)
 					break;
 
-				await _world.Advance();
-				await _world.Draw();
+				_world.Advance();
+				_world.Draw();
 				ShowScore();
 				_world.SpawnFood(1, 10);
 

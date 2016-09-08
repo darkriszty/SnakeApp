@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SnakeApp.Models
 {
@@ -26,7 +25,7 @@ namespace SnakeApp.Models
 			get { return _snakePoints.Any()	? new Point(_snakePoints[0]) : null; }
 		}
 
-		public async Task Advance()
+		public void Advance()
 		{
 			Point nextHead = GetNextHead();
 
@@ -68,24 +67,24 @@ namespace SnakeApp.Models
 			_growingPointIndicators.Add(growingPointIndicator);
 		}
 
-		public async Task SetDirection(Direction requestedDirection)
+		public void SetDirection(Direction requestedDirection)
 		{
 			if (!_direction.IsOpposite(requestedDirection))
 				_direction = requestedDirection;
 		}
 
-		public async Task Draw()
+		public void Draw()
 		{
-			await PointDrawing.DrawPoint(_snakePoints[0], HEAD_CHAR);
+			PointDrawing.DrawPoint(_snakePoints[0], HEAD_CHAR);
 			for (int i = 1; i < _snakePoints.Count; i++)
 			{
-				await PointDrawing.DrawPoint(_snakePoints[i], BODY_CHAR);
+				PointDrawing.DrawPoint(_snakePoints[i], BODY_CHAR);
 			}
 
 			if (_lastSnakePointToErase == null)
 				return;
 
-			await PointDrawing.ErasePoint(_lastSnakePointToErase);
+			PointDrawing.ErasePoint(_lastSnakePointToErase);
 		}
 
 		public List<Point> GetOccupiedPoints()
@@ -99,7 +98,7 @@ namespace SnakeApp.Models
 		{
 			_snakePoints.Clear();
 			_snakePoints.Add(initialHeadPosition);
-			// TODO: implement for other directions
+			// consider implementing this for other directions, so for instance the initial direction could be random
 			//if (initialDirection == Direction.Right)
 			{
 				for (int i = 1; i < initialSize; i++)

@@ -25,7 +25,7 @@ namespace SnakeApp.Models
 			_snakeDied = snakeDied;
 		}
 
-		public async Task Advance()
+		public void Advance()
 		{
 			// remove any old food
 			for (int i = _food.Count - 1; i >= 0; i--)
@@ -35,7 +35,7 @@ namespace SnakeApp.Models
 			}
 
 			// advance the snake
-			await _snake.Advance();
+			_snake.Advance();
 
 			// check if the snake head intersects with a food
 			foreach (var food in _food)
@@ -60,36 +60,36 @@ namespace SnakeApp.Models
 				_snakeDied();
 		}
 
-		public async Task Draw()
+		public void Draw()
 		{
 			// draw border
-			await DrawBorders();
-			await _snake.Draw();
+			DrawBorders();
+			_snake.Draw();
 			// drawing the food after the snake creates an 'eating' effect
 			foreach (var food in _food)
 			{
-				await food.Draw();
+				food.Draw();
 			}
 		}
 
-		public async Task ReceiveInput(ConsoleKey key)
+		public void ReceiveInput(ConsoleKey key)
 		{
 			switch (key)
 			{
 				case ConsoleKey.RightArrow:
-					await _snake.SetDirection(Direction.Right);
+					_snake.SetDirection(Direction.Right);
 					break;
 
 				case ConsoleKey.LeftArrow:
-					await _snake.SetDirection(Direction.Left);
+					_snake.SetDirection(Direction.Left);
 					break;
 
 				case ConsoleKey.UpArrow:
-					await _snake.SetDirection(Direction.Up);
+					_snake.SetDirection(Direction.Up);
 					break;
 
 				case ConsoleKey.DownArrow:
-					await _snake.SetDirection(Direction.Down);
+					_snake.SetDirection(Direction.Down);
 					break;
 			}
 		}
@@ -144,7 +144,7 @@ namespace SnakeApp.Models
 			return false;
 		}
 
-		private async Task DrawBorders()
+		private void DrawBorders()
 		{
 			if (_bordersDrawn)
 				return;
@@ -155,46 +155,46 @@ namespace SnakeApp.Models
 			{
 				p.X = i;
 				p.Y = 1;
-				await PointDrawing.DrawPoint(p, '=');
+				PointDrawing.DrawPoint(p, '=');
 			}
 			// bottom
 			for (int i = 0; i < _width; i++)
 			{
 				p.X = i;
 				p.Y = _height;
-				await PointDrawing.DrawPoint(p, '=');
+				PointDrawing.DrawPoint(p, '=');
 			}
 			// left
 			for (int i = 1; i <= _height; i++)
 			{
 				p.X = 0;
 				p.Y = i;
-				await PointDrawing.DrawPoint(p, '|');
+				PointDrawing.DrawPoint(p, '|');
 			}
 			// right
 			for (int i = 1; i <= _height; i++)
 			{
 				p.X = _width;
 				p.Y = i;
-				await PointDrawing.DrawPoint(p, '|');
+				PointDrawing.DrawPoint(p, '|');
 			}
 			// top left corner
 			p.X = 0;
 			p.Y = 1;
-			await PointDrawing.DrawPoint(p, '#');
+			PointDrawing.DrawPoint(p, '#');
 			// bottom left corner
 			p.X = 0;
 			p.Y = _height;
-			await PointDrawing.DrawPoint(p, '#');
+			PointDrawing.DrawPoint(p, '#');
 
 			// top right corner
 			p.X = _width;
 			p.Y = 1;
-			await PointDrawing.DrawPoint(p, '#');
+			PointDrawing.DrawPoint(p, '#');
 			// bottom right corner
 			p.X = _width;
 			p.Y = _height;
-			await PointDrawing.DrawPoint(p, '#');
+			PointDrawing.DrawPoint(p, '#');
 			_bordersDrawn = true;
 		}
 	}

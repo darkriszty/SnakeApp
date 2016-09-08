@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 
 namespace SnakeApp.Models
 {
@@ -43,18 +42,18 @@ namespace SnakeApp.Models
 
 		public bool IsConsumed { get; set; }
 
-		public async Task Draw()
+		public void Draw()
 		{
 			// after the food becomes old the world must first draw it (aka remove it)
 			// then the CanRemove property returns true such that it is removed from the world and the position is freed up
 			if (_IsExpired)
 			{
-				await PointDrawing.ErasePoint(_position);
+				PointDrawing.ErasePoint(_position);
 				_drawnAsRotten = true;
 			}
 			else
 			{
-				await PointDrawing.DrawPoint(_position, '*');
+				PointDrawing.DrawPoint(_position, '*');
 			}
 		}
 	}
