@@ -4,57 +4,28 @@ namespace SnakeApp.Models
 {
 	public class Food
 	{
-		private bool _drawnAsRotten;
-		private readonly byte _score;
-		private readonly Point _position;
-		private readonly DateTime _dateCreated;
-		private readonly byte _secondsToLive;
-		private bool _IsExpired
+		public Food()
 		{
-			get { return (DateTime.Now - _dateCreated).TotalSeconds > _secondsToLive; }
+			DateCreated = DateTime.Now;
 		}
 
-		public Food(byte score, Point position, byte secondsToLive)
+		public Food(byte score, Point position, byte secondsToLive) : this()
 		{
-			_score = score;
-			_position = position;
-			_secondsToLive = secondsToLive;
-			_dateCreated = DateTime.Now;
+			Score = score;
+			Position = position;
+			SecondsToLive = secondsToLive;
 		}
 
-		public Point Position
-		{
-			get { return _position; }
-		}
+		public Point Position { get; private set; }
 
-		public byte Score
-		{
-			get { return _score; }
-		}
+		public DateTime DateCreated { get; private set; }
 
-		/// <summary>
-		/// Can be removed from the world either after it was expired and drawn as expirted, or if it got consumed
-		/// </summary>
-		public bool CanRemove
-		{
-			get { return (_IsExpired && _drawnAsRotten) || IsConsumed; }
-		}
+		public byte Score { get; private set; }
+
+		public bool DrawnAsRotten { get; set; }
 
 		public bool IsConsumed { get; set; }
 
-		public void Draw()
-		{
-			// after the food becomes old the world must first draw it (aka remove it)
-			// then the CanRemove property returns true such that it is removed from the world and the position is freed up
-			if (_IsExpired)
-			{
-				PointDrawing.ErasePoint(_position);
-				_drawnAsRotten = true;
-			}
-			else
-			{
-				PointDrawing.DrawPoint(_position, '*');
-			}
-		}
+		public byte SecondsToLive { get; set; }
 	}
 }

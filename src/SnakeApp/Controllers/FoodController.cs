@@ -1,4 +1,5 @@
-﻿using SnakeApp.Models;
+﻿using SnakeApp.Extensions;
+using SnakeApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace SnakeApp.Controllers
 		{
 			for (int i = _food.Count - 1; i >= 0; i--)
 			{
-				if (_food[i].CanRemove)
+				if (_food[i].CanRemove())
 					_food.RemoveAt(i);
 			}
 		}
