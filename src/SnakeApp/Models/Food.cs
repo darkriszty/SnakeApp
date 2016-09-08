@@ -23,10 +23,10 @@ namespace SnakeApp.Models
 
 		public byte Score { get; private set; }
 
+		public byte SecondsToLive { get; private set; }
+
 		public bool DrawnAsRotten { get; set; }
 
 		public bool IsConsumed { get; set; }
-
-		public byte SecondsToLive { get; set; }
 	}
 }
