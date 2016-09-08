@@ -5,11 +5,14 @@ namespace SnakeApp.Controllers
 {
 	public class GameController
 	{
+		private byte MAX_WIDTH = 80;
+		private byte MAX_HEIGHT = 25;
+
 		public void StartNewGame()
 		{
 			PrepareConsole();
 
-			var game = new Game(80, 25, 5, 100);
+			var game = new Game(Math.Min((byte)(Console.WindowWidth - 1), MAX_WIDTH), Math.Min((byte)(Console.WindowHeight - 1), MAX_HEIGHT), 5, 100);
 			game.StartAsync();
 
 			ConsoleKeyInfo userInput = new ConsoleKeyInfo();
