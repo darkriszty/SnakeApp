@@ -41,7 +41,9 @@ namespace SnakeApp.Controllers
 
 		private Task StartAsync()
 		{
+			Console.Title = "Game running";
 			_game.IsOver = false;
+			_game.IsPaused = false;
 			// create cancellation token, run main loop, return the task
 			_gameCancellationTokenSource = new CancellationTokenSource();
 			return MainLoop(_gameCancellationTokenSource.Token);
@@ -49,8 +51,16 @@ namespace SnakeApp.Controllers
 
 		public void Stop()
 		{
+			Console.Title = "Game paused";
 			_game.IsPaused = true;
 			_gameCancellationTokenSource.Cancel();
+		}
+
+		private void GameOver()
+		{
+			Stop();
+			Console.Title = "Game over";
+			_game.IsOver = true;
 		}
 
 		public void ReceiveInput(ConsoleKey key)
@@ -96,17 +106,10 @@ namespace SnakeApp.Controllers
 			}
 		}
 
-		private void GameOver()
-		{
-			Stop();
-			Console.Title = "Game over";
-			_game.IsOver = true;
-		}
-
 		private void ShowScore()
 		{
 			Console.SetCursorPosition(0, 0);
-			Console.Write(_game.Score.FoodConsumed);
+			Console.Write($"Score: {_game.Score.FoodConsumed}");
 		}
 
 		private void PrepareConsole()
