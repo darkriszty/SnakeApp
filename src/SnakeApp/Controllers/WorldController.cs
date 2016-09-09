@@ -78,7 +78,7 @@ namespace SnakeApp.Controllers
 			List<Point> snakeOccupiedPoints = new List<Point>();
 
 			// the snake is not allowed to collide with itself
-			snakeOccupiedPoints.AddRange(_world.Snake.GetOccupiedPoints());
+			snakeOccupiedPoints.AddRange(_world.Snake.GetSnakePoints());
 			// exclude head, otherwise it's game over from start
 			snakeOccupiedPoints.RemoveAt(0);
 			if (snakeOccupiedPoints.Contains(_world.Snake.Head()))

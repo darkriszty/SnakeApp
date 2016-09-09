@@ -9,9 +9,10 @@ namespace SnakeApp.Models
 		{
 			SnakePoints = new List<Point>();
 			GrowingPointIndicators = new List<GrowingPointIndicator>();
+			DirectionQueue = new Queue<Direction>();
 		}
-		
-		public Direction Direction { get; set; }
+
+		public Queue<Direction> DirectionQueue { get; private set; }
 
 		public Point LastSnakePointToErase { get; set; }
 

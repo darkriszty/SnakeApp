@@ -1,4 +1,5 @@
 ﻿using SnakeApp.Configuration;
+using SnakeApp.Extensions;
 using SnakeApp.Graphics;
 using SnakeApp.Models;
 
@@ -16,7 +17,7 @@ namespace SnakeApp.Factories
 		public Snake CreateSnake()
 		{
 			var snake = new Snake();
-			snake.Direction = Direction.Right;
+			snake.SetDirection(Direction.Right);
 
 			var initialHeadPosition = GetInitialSnakeHeadPosition(_appSettings.WorldWidth, _appSettings.WorldHeight, _appSettings.InitialSnakeSize);
 			snake.SnakePoints.Add(initialHeadPosition);

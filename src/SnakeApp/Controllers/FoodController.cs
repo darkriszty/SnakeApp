@@ -70,7 +70,7 @@ namespace SnakeApp.Controllers
 		{
 			// get all the occupied points
 			List<Point> allOccupiedPoints = new List<Point>();
-			allOccupiedPoints.AddRange(_snake.GetOccupiedPoints());
+			allOccupiedPoints.AddRange(_snake.GetSnakePoints());
 			allOccupiedPoints.AddRange(_food.Select(f => f.Position));
 
 			// while the x and y are occupied keep generating a new coordinate

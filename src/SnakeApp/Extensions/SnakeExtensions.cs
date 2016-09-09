@@ -12,45 +12,25 @@ namespace SnakeApp.Extensions
 			return snake.SnakePoints.Any() ? new Point(snake.SnakePoints[0]) : null;
 		}
 
-		public static void SetDirection(this Snake snake, Direction requestedDirection)
+		public static Direction GetDirection(this Snake snake)
 		{
-			if (!snake.Direction.IsOpposite(requestedDirection))
-				snake.Direction = requestedDirection;
+			if (snake.DirectionQueue.Count == 0)
+				return Direction.NotSet;
+			return snake.DirectionQueue.Peek();
 		}
 
-		public static List<Point> GetOccupiedPoints(this Snake snake)
+		public static void SetDirection(this Snake snake, Direction requestedDirection)
+		{
+			// two consecutive moves can't be opposite
+			if (!snake.GetDirection().IsOpposite(requestedDirection))
+				snake.DirectionQueue.Enqueue(requestedDirection);
+		}
+
+		public static List<Point> GetSnakePoints(this Snake snake)
 		{
 			var occupiedPoints = new List<Point>();
 			occupiedPoints.AddRange(snake.SnakePoints.Select(s => new Point(s)));
 			return occupiedPoints;
-		}
-
-		public static Point GetNextHead(this Snake snake)
-		{
-			Point nextHead = null;
-			switch (snake.Direction)
-			{
-				case Direction.Left:
-					nextHead = new Point { X = snake.SnakePoints[0].X - 1, Y = snake.SnakePoints[0].Y };
-					break;
-
-				case Direction.Right:
-					nextHead = new Point { X = snake.SnakePoints[0].X + 1, Y = snake.SnakePoints[0].Y };
-					break;
-
-				case Direction.Up:
-					nextHead = new Point { X = snake.SnakePoints[0].X, Y = snake.SnakePoints[0].Y - 1 };
-					break;
-
-				case Direction.Down:
-					nextHead = new Point { X = snake.SnakePoints[0].X, Y = snake.SnakePoints[0].Y + 1 };
-					break;
-
-				default:
-					break;
-			}
-
-			return nextHead;
 		}
 	}
 }

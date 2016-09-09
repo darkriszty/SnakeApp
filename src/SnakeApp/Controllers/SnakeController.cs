@@ -11,7 +11,7 @@ namespace SnakeApp.Controllers
 
 		public void Advance(Snake snake)
 		{
-			Point nextHead = snake.GetNextHead();
+			Point nextHead = GetNextHead(snake);
 
 			// add the new head
 			snake.SnakePoints.Insert(0, nextHead);
@@ -33,6 +33,9 @@ namespace SnakeApp.Controllers
 					i--;
 				}
 			}
+
+			if (snake.DirectionQueue.Count > 1)
+				snake.DirectionQueue.Dequeue();
 		}
 
 		public void Consume(Snake snake, Food food)
@@ -44,7 +47,7 @@ namespace SnakeApp.Controllers
 			var growingPointIndicator = new GrowingPointIndicator();
 			growingPointIndicator.OriginalFoodPosition = new Point(food.Position);
 
-			Point nextHead = snake.GetNextHead();
+			Point nextHead = GetNextHead(snake);
 			growingPointIndicator.TailPositionWhenToGrow = nextHead;
 
 			// when the tail of the snake leaves the position of the food then the snake grows by adding one more point to its tail
@@ -63,6 +66,35 @@ namespace SnakeApp.Controllers
 				return;
 
 			PointDrawing.ErasePoint(snake.LastSnakePointToErase);
+		}
+
+
+		private Point GetNextHead(Snake snake)
+		{
+			Point nextHead = null;
+			switch (snake.GetDirection())
+			{
+				case Direction.Left:
+					nextHead = new Point { X = snake.SnakePoints[0].X - 1, Y = snake.SnakePoints[0].Y };
+					break;
+
+				case Direction.Right:
+					nextHead = new Point { X = snake.SnakePoints[0].X + 1, Y = snake.SnakePoints[0].Y };
+					break;
+
+				case Direction.Up:
+					nextHead = new Point { X = snake.SnakePoints[0].X, Y = snake.SnakePoints[0].Y - 1 };
+					break;
+
+				case Direction.Down:
+					nextHead = new Point { X = snake.SnakePoints[0].X, Y = snake.SnakePoints[0].Y + 1 };
+					break;
+
+				default:
+					break;
+			}
+
+			return nextHead;
 		}
 	}
 }
