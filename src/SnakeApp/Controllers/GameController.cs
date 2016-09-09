@@ -78,6 +78,9 @@ namespace SnakeApp.Controllers
 					Stop();
 			}
 
+			if (_game.IsPaused || _game.IsOver)
+				return;
+
 			// send the input to the world, the world decides what game objects it should affect
 			_worldController.ReceiveInput(key);
 		}
