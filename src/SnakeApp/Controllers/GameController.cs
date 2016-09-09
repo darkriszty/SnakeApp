@@ -84,7 +84,7 @@ namespace SnakeApp.Controllers
 
 		private async Task MainLoop(CancellationToken cancellationToken)
 		{
-			while (true)
+			while (!_game.IsPaused)
 			{
 				if (cancellationToken.IsCancellationRequested)
 					break;
